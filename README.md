@@ -74,5 +74,5 @@ Pattern matches are passed in order as arguments to the handler's request method
 ## Filters
   Comming soon
   
-## Custom terms
+## Custom tokens
   Comming soon
