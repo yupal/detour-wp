@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: ToRo WP
+Plugin Name: Detour WP
 Description: Create Routes
 Author: Iulian Palade
 
@@ -9,18 +9,19 @@ Author: Iulian Palade
 require __DIR__ . "/DetourWP.php";
 
 Yupal\DetourWP::instance();
-add_action('torowp\handle', function ($detour) {
 
-  $detour->get('/nelu',function($query){
-      return 'x';
+add_action('detour\handle', function ($detour) {
+
+  $detour->get('/hello-world',function($query){
+      return 'Hello World';
   });
 
     $detour->after('/sample-page',function(){
-        
+                // add some script after page loads
            ?>
-              <!--<script type="text/javascript">-->
-              <!--    alert('I was here');-->
-              <!--</script>-->
+              <script type="text/javascript">
+                  alert('I was here');
+              </script>
            <?php
         
     });
@@ -29,14 +30,16 @@ add_action('torowp\handle', function ($detour) {
        ':letter' => '([a-zA-Z])' 
     ));
     
-    $detour->get('/nelu/:letter',function($letter){
     
-        wp_safe_redirect('/gigi/' . ord ($letter));
+    // redirect test
+    $detour->get('/ascii-from/:letter',function($letter){
+    
+        wp_safe_redirect('/ascii-to/' . ord ($letter));
         return true;
     });
     
-    $detour->get('/gigi/:number',function($number){
-        return 'Data: ' . $number ;
+    $detour->get('/ascii-to/:number',function($number){
+        return 'ASCII CODE: ' . $number ;
     });
     
 });
