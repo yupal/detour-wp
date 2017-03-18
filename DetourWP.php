@@ -10,11 +10,11 @@ if (!class_exists('\\Yupal\\DetourWP')) {
         private static $instance = null;
 
         private $tokens    = array();
-        private $routerKey = "torowp";
+        private $routerKey = "detourwp";
         private $routes    = array();
-        private $filtersKey = array('before','after','query');
+        private $hooksKeys = array('before','after','query');
         
-        private $filters   = array(
+        private $hooks   = array(
             'before' => array(),
             'after'  => array(),
             'query'  => array(),
@@ -67,9 +67,9 @@ if (!class_exists('\\Yupal\\DetourWP')) {
             } else {
                 $when = strtolower($method);
 
-                if (in_array($when, $this->filtersKey)) {
+                if (in_array($when, $this->hooksKeys)) {
                     array_unshift($arguments, $when);
-                    call_user_func_array(array($this, 'filter'), $arguments);
+                    call_user_func_array(array($this, 'routeHook'), $arguments);
                 } else {
                     throw new Exception('Endpoint "' . $method . '" does not exist');
                 }
@@ -133,10 +133,10 @@ if (!class_exists('\\Yupal\\DetourWP')) {
             );
         }
 
-        public function filter($when, $pattern, $callback)
+        public function routeHook($when, $pattern, $callback)
         {
             $pattern = untrailingslashit($pattern);
-            if (!in_array($when, $this->filtersKey)) {
+            if (!in_array($when, $this->hooksKeys)) {
                 return;
             }
             $regex = strtr($pattern, $this->tokens);
@@ -157,8 +157,8 @@ if (!class_exists('\\Yupal\\DetourWP')) {
 
         private function applyHooks()
         {
-            $this->tokens = apply_filters('torowp\tokens', $this->tokens);
-            do_action('torowp\handle', $this);
+            $this->tokens = apply_filters('detour\tokens', $this->tokens);
+            do_action('detour\handle', $this);
         }
 
         private function addRewrites()
@@ -248,16 +248,16 @@ if (!class_exists('\\Yupal\\DetourWP')) {
     
             // look for wp query filters
             
-            $queryFilters = $this->filters['query'];
+            $queryFilters = $this->hooks['query'];
             add_action('pre_get_posts', function ($query) use ($queryFilters, $arguments, $path) {
                 $queryFiltersData = array();
                 
                 $args = $arguments;
                 array_unshift($args, $query);
                 
-                foreach ($queryFilters as $filter) {
-                    if (preg_match('#^/?' . $filter['regex'] . '/?$#', $path)) {
-                        $result = call_user_func_array($filter['callback'], $args);
+                foreach ($queryFilters as $hook) {
+                    if (preg_match('#^/?' . $hook['regex'] . '/?$#', $path)) {
+                        $result = call_user_func_array($hook['callback'], $args);
                         
                         if (is_array($result)) {
                             $queryFiltersData = array_merge($queryFiltersData, $result);
@@ -267,7 +267,7 @@ if (!class_exists('\\Yupal\\DetourWP')) {
 
                 if (!empty($queryFiltersData)) {
                     // Reset query variables, because `WP_Query` does nothing with
-                    // torowp query var
+                    // detour query var
                     $query->init();
                 
                     // Set date query based on custom vars
@@ -308,9 +308,9 @@ if (!class_exists('\\Yupal\\DetourWP')) {
             });
             
             
-            foreach ($this->filters['before'] as $filter) {
-                if (preg_match('#^/?' . $filter['regex'] . '/?$#', $path)) {
-                    call_user_func_array($filter['callback'], $arguments);
+            foreach ($this->hooks['before'] as $hook) {
+                if (preg_match('#^/?' . $hook['regex'] . '/?$#', $path)) {
+                    call_user_func_array($hook['callback'], $arguments);
                 }
             }
 
@@ -320,11 +320,11 @@ if (!class_exists('\\Yupal\\DetourWP')) {
             $contentBuffer   = ob_get_clean();
 
             if (empty($contentResponse)) {
-                $afterFiltes = $this->filters['after'];
+                $afterFiltes = $this->hooks['after'];
                 add_action('wp_footer', function () use ($afterFiltes, $arguments, $path) {
-                    foreach ($afterFiltes as $filter) {
-                        if (preg_match('#^/?' . $filter['regex'] . '/?$#', $path)) {
-                            call_user_func_array($filter['callback'], $arguments);
+                    foreach ($afterFiltes as $hook) {
+                        if (preg_match('#^/?' . $hook['regex'] . '/?$#', $path)) {
+                            call_user_func_array($hook['callback'], $arguments);
                         }
                     }
                 });
@@ -333,9 +333,9 @@ if (!class_exists('\\Yupal\\DetourWP')) {
             } else {
                 echo $contentResponse;
 
-                foreach ($this->filters['after'] as $filter) {
-                    if (preg_match('#^/?' . $filter['regex'] . '/?$#', $path)) {
-                        call_user_func_array($filter['callback'], $arguments);
+                foreach ($this->hooks['after'] as $hook) {
+                    if (preg_match('#^/?' . $hook['regex'] . '/?$#', $path)) {
+                        call_user_func_array($hook['callback'], $arguments);
                     }
                 }
 
@@ -348,8 +348,8 @@ if (!class_exists('\\Yupal\\DetourWP')) {
             if (!self::$instance) {
                 $routerKey = null;
 
-                if (defined('TOROWP_ROUTER_KEY')) {
-                    $routerKey = TOROWP_ROUTER_KEY;
+                if (defined('DETOURWP_ROUTER_KEY')) {
+                    $routerKey = DETOURWP_ROUTER_KEY;
                 }
 
                 self::$instance = new static($routerKey);
