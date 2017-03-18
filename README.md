@@ -1,4 +1,4 @@
-# detour-wp
+# DetourWP
 Simple Wordpress router ( inspired by ToroPHP router )
 
 ## Features
