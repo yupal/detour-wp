@@ -5,7 +5,7 @@ Simple Wordpress router ( inspired by ToroPHP router )
   - routing using strings, regular expressions, and defined types
   (`number`, `string`, `alpha`)
   - before and after route hooks
-  - before wp_query 
+  - wp_query parameters hook ( `$detour->query` )
   
 ## Getting started
 
@@ -17,7 +17,7 @@ Simple route with hello world example.
 require __DIR__ . "/DetourWP.php";
 Yupal\DetourWP::instance();
 
-add_action('torowp\handle', function ($detour) {
+add_action('detour\handle', function ($detour) {
 
     $detour->get('/hello-world',function(){
       return 'Hello world';
@@ -50,10 +50,7 @@ $detour->any($route, $callback);
 ```php
 <?php
 
-require __DIR__ . "/DetourWP.php";
-Yupal\DetourWP::instance();
-
-add_action('torowp\handle', function ($detour) {
+add_action('detour\handle', function ($detour) {
 
     $detour->get('/say-my-name/:string',function($name){
       return 'Hello ' . $name;
@@ -69,10 +66,10 @@ add_action('torowp\handle', function ($detour) {
 
 ```
 By default Detour provides a few general tokens ( `:any` , `:string`, `:number`, `:alpha` ) to help you build routes without writing regular expression. 
-Pattern matches are passed in order as arguments to the handler's request method. Like in the previous example the `:string` match was passed as the first argument in the callback.
+Pattern matches are passed in order as arguments to the callback attached to request method. Like in the previous example the `:string` match was passed as the first argument in the callback.
 
-## Before / After route handle
+## Before / After route hooks
   Comming soon
   
-## Custom tokens
+## Custom tokens registration
   Comming soon
