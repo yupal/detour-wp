@@ -70,7 +70,7 @@ By default DetourWP provides a few general tokens ( `:any` , `:string`, `:number
 Pattern matches are passed in order as arguments to the callback attached to request method. Like in the previous example the `:string` match was passed as the first argument in the callback.
 
 ## Before / After route hooks
-  DetourWP provides to types of hooks before and after request `$callback` was called.
+  DetourWP provides two types of hooks before and after request `$callback` was called.
 The hooks are called with the same arguments as the `$callback` function
 
 ```php
@@ -142,7 +142,7 @@ add_filter('detour\tokens',function($currentTokens){
 
 ## The `query` hook
 
-The `query` hook is a special type of hook defined by DetourWP to make a easier interaction with the main wordpress query.
+The `query` hook is a special type of hook defined by DetourWP to make an easier interaction with the main wordpress query.
 
 ```php
 
@@ -171,9 +171,8 @@ The optional `template` parameter added in the `query` hook will let you set a c
   - a filepath within the entire wordpress instance ( a relative path to the Wordpress root instance )
   - an absolute filepath
  
- The template value can ommit the `.php` extensions
+ The template value can ommit the `.php` extension
 
 ## License
 
-DetourWP was created by [Iulian Palade](https://github.com/yupal/) and released under
-the MIT License.
+DetourWP was created by [Iulian Palade](https://github.com/yupal/) and released under the MIT License.
