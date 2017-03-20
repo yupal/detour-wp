@@ -6,7 +6,7 @@ Author: Iulian Palade
 
  */
 
-require __DIR__ . "/DetourWP.php";
+require __DIR__ . "/src/DetourWP.php";
 
 Yupal\DetourWP::instance();
 
