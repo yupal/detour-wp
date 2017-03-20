@@ -1,0 +1,25 @@
+{
+    "name": "yupal/detour-wp",
+    "description": "Simple WordPress router ( inspired by ToroPHP router )",
+    "type": "library",
+    "keywords": [
+        "wordpress",
+        "php",
+        "router"
+    ],
+    "homepage": "https://github.com/yupal/detour-wp",
+    "license": "MIT",
+    "authors": [{
+        "name": "Iulian Palade",
+        "email": "yupal@live.com",
+        "role": "Developer"
+    }],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "files": [
+            "src/DetourWP.php"
+        ]
+    }
+}
