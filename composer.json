@@ -2,6 +2,7 @@
     "name": "yupal/detour-wp",
     "description": "Simple WordPress router ( inspired by ToroPHP router )",
     "type": "library",
+    "minimum-stability": "stable",
     "keywords": [
         "wordpress",
         "php",
